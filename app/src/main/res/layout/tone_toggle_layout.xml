@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:enabled="false"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:selectionRequired="true"
+    app:singleSelection="true"
+    tools:parentTag="com.google.android.material.button.MaterialButtonToggleGroup">
+
+    <Button
+        android:id="@+id/toneEven"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/toneRising"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/toneFallRise"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/toneFalling"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/toneNeutral"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+</merge>
