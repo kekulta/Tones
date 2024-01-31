@@ -1,4 +1,4 @@
-package com.kekulta.tones.features.main.domain.models
+package com.kekulta.tones.features.main.domain.models.enums
 
 enum class Tone {
     EVEN,

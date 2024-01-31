@@ -1,7 +1,7 @@
 package com.kekulta.tones.features.main.domain.mappers
 
 import com.kekulta.tones.features.main.data.models.TonePairDto
-import com.kekulta.tones.features.main.domain.models.Tone
+import com.kekulta.tones.features.main.domain.models.enums.Tone
 import com.kekulta.tones.features.main.domain.models.TonePairDo
 import timber.log.Timber
 

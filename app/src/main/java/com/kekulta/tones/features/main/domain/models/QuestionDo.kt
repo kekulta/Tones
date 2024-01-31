@@ -1,6 +1,7 @@
 package com.kekulta.tones.features.main.domain.models
 
 import android.net.Uri
+import com.kekulta.tones.features.main.domain.models.enums.Tone
 
 sealed class QuestionDo {
     data class MinPair(

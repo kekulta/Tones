@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/player_background"
+    android:backgroundTint="?colorSurfaceContainerHigh"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <TextView
+        android:id="@+id/settingName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:text="Show correct answers"
+        android:textColor="?colorOnSurface"
+        android:textSize="15sp" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/settingSwitch"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:icon="@drawable/baseline_play_circle_24" />
+
+</merge>

@@ -1,9 +1,8 @@
-package com.kekulta.tones.features.shared
+package com.kekulta.tones.features.shared.utils
 
 import java.text.Normalizer
 
 private fun String.normalizeNFD() = Normalizer.normalize(this, Normalizer.Form.NFD)
-private fun String.normalizeNFC() = Normalizer.normalize(this, Normalizer.Form.NFC)
 private fun String.removeNonSpacingMarks() = normalizeNFD().replace("\\p{Mn}+".toRegex(), "")
 
 private fun removeTone(text: String): String {

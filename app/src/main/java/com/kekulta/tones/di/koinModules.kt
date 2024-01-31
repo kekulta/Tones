@@ -6,8 +6,16 @@ import com.kekulta.tones.features.main.data.impl.NetworkDataStoreImpl
 import com.kekulta.tones.features.main.domain.QuestionsRepository
 import com.kekulta.tones.features.main.domain.mappers.QuestionMapper
 import com.kekulta.tones.features.main.domain.mappers.TonePairMapper
-import com.kekulta.tones.features.main.domain.viewmodels.MainViewModel
+import com.kekulta.tones.features.main.domain.viewmodels.QuizViewModel
+import com.kekulta.tones.features.main.presentation.formatters.AnswerVoFormatter
+import com.kekulta.tones.features.main.presentation.formatters.AnswersToggleVoFormatter
+import com.kekulta.tones.features.main.presentation.formatters.AnswersVoFormatter
+import com.kekulta.tones.features.main.presentation.formatters.CheckButtonFormatter
+import com.kekulta.tones.features.main.presentation.formatters.NextButtonFormatter
 import com.kekulta.tones.features.main.presentation.formatters.QuestionVoFormatter
+import com.kekulta.tones.features.main.presentation.formatters.SettingsFormatter
+import com.kekulta.tones.features.main.presentation.framework.SettingsNamesManager
+import com.kekulta.tones.features.main.domain.viewmodels.SettingsViewModel
 import com.kekulta.tones.features.settings.SettingsRepository
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.client.HttpClient
@@ -25,13 +33,21 @@ val koinModule = module {
     single { QuestionsRepository(get(), get(), get()) }
     single { SettingsRepository() }
 
+    factory { SettingsNamesManager() }
+    factory { SettingsFormatter(get()) }
     factory { TonePairMapper() }
     factory { QuestionMapper() }
-    factory { QuestionVoFormatter() }
+    factory { QuestionVoFormatter(get(), get(), get()) }
+    factory { AnswersToggleVoFormatter(get()) }
+    factory { AnswersVoFormatter(get()) }
+    factory { AnswerVoFormatter() }
+    factory { NextButtonFormatter() }
+    factory { CheckButtonFormatter() }
 }
 
 val viewModelsModule = module {
-    viewModel { MainViewModel(get(), get()) }
+    viewModel { QuizViewModel(get(), get(), get()) }
+    viewModel { SettingsViewModel(get(), get()) }
 }
 
 private fun ktorfit(client: HttpClient, baseUrl: String): Ktorfit {

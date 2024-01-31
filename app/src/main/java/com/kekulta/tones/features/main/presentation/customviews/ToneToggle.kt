@@ -1,29 +1,21 @@
 package com.kekulta.tones.features.main.presentation.customviews
 
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.Context
-import android.content.res.ColorStateList
-import android.media.MediaPlayer
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.animation.DecelerateInterpolator
-import android.widget.Button
-import androidx.annotation.ColorInt
-import androidx.core.view.get
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.kekulta.tones.R
 import com.kekulta.tones.databinding.ToneToggleLayoutBinding
-import com.kekulta.tones.features.shared.animateWidth
-import com.kekulta.tones.features.shared.disableInteractions
-import com.kekulta.tones.features.shared.dp
-import com.kekulta.tones.features.shared.enableInteractions
-import com.kekulta.tones.features.shared.getMaterialColor
-import com.kekulta.tones.features.shared.getMaterialColorStateList
-import com.google.android.material.R as Rm
+import com.kekulta.tones.features.main.domain.models.UiEventCallback
+import com.kekulta.tones.features.main.domain.models.enums.SyllableNum
+import com.kekulta.tones.features.main.domain.models.enums.Tone
+import com.kekulta.tones.features.main.domain.models.UiEvent
+import com.kekulta.tones.features.main.presentation.vo.AnswersToggleVo
+import com.kekulta.tones.features.shared.utils.disableInteractions
+import com.kekulta.tones.features.shared.utils.enableInteractions
+import com.kekulta.tones.features.shared.utils.hide
+import com.kekulta.tones.features.shared.utils.show
 
 
 class ToneToggle @JvmOverloads constructor(
@@ -31,138 +23,74 @@ class ToneToggle @JvmOverloads constructor(
 ) : MaterialButtonToggleGroup(context, attrs, defStyleAttr) {
     private val binding: ToneToggleLayoutBinding =
         ToneToggleLayoutBinding.inflate(LayoutInflater.from(context), this)
-    private var correct: Int? = null
+    private var isInteractive: Boolean = true
+        set(value) {
+            if (value != field) {
+                if (value) {
+                    enableInteractions()
+                } else {
+                    disableInteractions()
+                }
+            }
+            field = value
+        }
 
+    private var syllableNum: SyllableNum? = null
+    private var uiEventCallback: UiEventCallback? = null
 
     init {
-        layoutParams = LayoutParams(
-            RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT
-        )
-
         orientation = VERTICAL
-        isSelectionRequired = true
-        isSingleSelection = true
-        isEnabled = false
-
         addOnButtonCheckedListener(::onButtonChecked)
     }
 
-    fun bind(tones: List<String>, correct: Int) {
-        this.correct = correct
 
-        binding.toneEven.text = tones[0]
-        binding.toneRising.text = tones[1]
-        binding.toneFallRise.text = tones[2]
-        binding.toneFalling.text = tones[3]
-        binding.toneNeutral.text = tones[4]
+    fun bind(answersToggleVo: AnswersToggleVo, jumpToState: Boolean = false) {
+        with(binding) {
+            with(answersToggleVo.answers) {
+                toneEven.bind(even, jumpToState)
+                toneRising.bind(rising, jumpToState)
+                toneFallRise.bind(fallRise, jumpToState)
+                toneFalling.bind(falling, jumpToState)
+                toneNeutral.bind(neutral, jumpToState)
+            }
+        }
 
-        isEnabled = true
-        isSingleSelection = true
-
-        uncheckAll()
-        enableInteractions()
-    }
-
-    fun check() {
-        disableInteractions()
-
-        repeat(5) { i ->
-
-            when {
-                get(i).id in checkedButtonIds && i == correct -> {
-                    get(i).animateBackgroundTint(
-                        getMaterialColor(Rm.attr.colorSecondaryContainer),
-                        getMaterialColor(R.attr.colorCorrect)
-                    )
-                    getButton(i).setTextColor(getMaterialColor(R.attr.colorOnCorrect))
-                }
-
-//                get(i).id !in checkedButtonIds && i == correct -> {
-//                    get(i).animateBackgroundTint(
-//                        getMaterialColor(Rm.attr.colorSecondary),
-//                        getMaterialColor(R.attr.colorCorrectContainer)
-//                    )
-//                    get(i).animateWidth(dp(100), dp(120))
-//                    getButton(i).setTextColor(getMaterialColor(R.attr.colorOnCorrectContainer))
-//                }
-
-                get(i).id in checkedButtonIds && i != correct -> {
-                    get(i).animateBackgroundTint(
-                        getMaterialColor(Rm.attr.colorSecondaryContainer),
-                        getMaterialColor(Rm.attr.colorError)
-                    )
-                    getButton(i).setTextColor(getMaterialColor(Rm.attr.colorOnError))
-                }
+        with(answersToggleVo) {
+            isEnabled = state.isEnabled
+            isInteractive = state.isInteractive
+            if (state.isShown) {
+                show()
+            } else {
+                hide()
             }
         }
     }
 
-//    private fun clearHighlighting() {
-//        repeat(5) { i ->
-//            getButton(i).apply {
-//                if (backgroundTintList?.defaultColor == getMaterialColor(R.attr.colorCorrectContainer)) {
-//                    animateBackgroundTint(
-//                        getMaterialColor(R.attr.colorCorrectContainer),
-//                        getMaterialColor(Rm.attr.colorSecondaryContainer)
-//                    )
-//                    setTextColor(getMaterialColorStateList(Rm.attr.colorOnSecondaryContainer))
-//                    animateWidth(dp(120), dp(100))
-//                }
-//            }
-//        }
-//    }
+    fun setUiCallback(syllableNum: SyllableNum, callback: UiEventCallback?) {
+        uiEventCallback = callback
+        this.syllableNum = syllableNum
+    }
+
+    private fun dispatchSelect(tone: Tone) {
+        uiEventCallback?.let { uiEventCallback ->
+            syllableNum?.let { syllable ->
+                uiEventCallback(UiEvent.SelectSyllable(syllable, tone))
+            }
+        }
+    }
 
     private fun onButtonChecked(
         group: MaterialButtonToggleGroup, checkedId: Int, isChecked: Boolean
     ) {
+        val tone = when (checkedId) {
+            R.id.toneEven -> Tone.EVEN
+            R.id.toneRising -> Tone.RISING
+            R.id.toneFallRise -> Tone.FALL_RISE
+            R.id.toneFalling -> Tone.FALLING
+            R.id.toneNeutral -> Tone.NEUTRAL
+            else -> null
+        } ?: return
 
-        group.findViewById<Button>(checkedId).apply {
-            if (isChecked) {
-                animateBackgroundTint(
-                    backgroundTintList?.defaultColor
-                        ?: getMaterialColor(Rm.attr.colorSecondaryContainer),
-                    getMaterialColor(Rm.attr.colorSecondary)
-                )
-                setTextColor(getMaterialColorStateList(Rm.attr.colorOnSecondary))
-                animateWidth(dp(100), dp(120))
-            } else {
-                animateBackgroundTint(
-                    backgroundTintList?.defaultColor
-                        ?: getMaterialColor(Rm.attr.colorSecondary),
-                    getMaterialColor(Rm.attr.colorSecondaryContainer)
-                )
-                setTextColor(getMaterialColorStateList(Rm.attr.colorOnSecondaryContainer))
-                animateWidth(dp(120), dp(100))
-            }
-        }
-    }
-
-    private fun MaterialButtonToggleGroup.getButton(index: Int): Button {
-        return get(index) as Button
-    }
-
-    private fun View.animateBackgroundTint(
-        @ColorInt colorFrom: Int,
-        @ColorInt colorTo: Int
-    ) {
-        val colorAnimator = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-        colorAnimator.duration = 300
-        colorAnimator.interpolator = DecelerateInterpolator()
-        colorAnimator.addUpdateListener { animator ->
-            backgroundTintList = ColorStateList.valueOf(animator.animatedValue as Int)
-        }
-        colorAnimator.start()
-    }
-
-    private fun View.animateWidth(old: Float, new: Float) {
-        animateWidth(old.toInt(), new.toInt())
-    }
-
-    private fun uncheckAll() {
-        // clearHighlighting()
-        val temp = isSelectionRequired
-        isSelectionRequired = false
-        checkedButtonIds.forEach { uncheck(it) }
-        isSelectionRequired = temp
+        dispatchSelect(tone)
     }
 }

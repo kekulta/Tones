@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation(libs.bindingdelegate)
+    implementation(libs.bundles.nav.component)
     implementation(libs.koin.android)
     implementation(libs.serialization.json)
     implementation(libs.bundles.ktor)

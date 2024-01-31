@@ -1,34 +1,44 @@
 package com.kekulta.tones.features.main.presentation.ui
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import by.kirich1409.viewbindingdelegate.viewBinding
+import androidx.navigation.createGraph
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.fragment
 import com.kekulta.tones.R
-import com.kekulta.tones.databinding.ActivityMainBinding
-import com.kekulta.tones.features.main.domain.viewmodels.MainViewModel
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MainViewModel by viewModel()
-    private val binding by viewBinding(ActivityMainBinding::bind)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        binding.testCard.onNextCallback = {
-            viewModel.nextQuestion()
-        }
+        setupNavigation()
+    }
 
-        lifecycleScope.launch {
-            viewModel.currQuestion.collect { vo ->
-                Timber.w("Collect! $vo")
-                binding.testCard.bind(vo)
+    private fun setupNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.rootNavFragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+
+        navController.graph = navController.createGraph(
+            startDestination = "menu"
+        ) {
+            fragment<MenuFragment>("menu") {
+                label = "Menu"
+            }
+
+            fragment<QuizFragment>("quiz") {
+                label = "Quiz"
+            }
+
+            fragment<SettingsFragment>("settings") {
+                label = "Settings"
             }
         }
+
+        onBackPressedDispatcher.addCallback { navController.popBackStack() }
     }
 }
 

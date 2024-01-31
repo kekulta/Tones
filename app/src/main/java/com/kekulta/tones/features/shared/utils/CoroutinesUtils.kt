@@ -1,4 +1,4 @@
-package com.kekulta.tones.features.shared
+package com.kekulta.tones.features.shared.utils
 
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.coroutineScope

@@ -30,6 +30,5 @@ class App : Application() {
     companion object {
         lateinit var instance: App
             private set
-        const val AUDIO_PROVIDER_AUTHORITY = "com.kekulta.audioprovider"
     }
 }

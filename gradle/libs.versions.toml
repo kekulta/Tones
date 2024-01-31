@@ -15,6 +15,7 @@ timber = "5.0.1"
 kotlinx-serialization = "1.6.2"
 koin = "3.5.3"
 bindingdelegate = "1.5.9"
+nav = "2.7.6"
 
 [libraries]
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
@@ -31,6 +32,9 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 bindingdelegate = { group = "com.github.kirich1409", name = "viewbindingpropertydelegate-noreflection", version.ref = "bindingdelegate" }
+nav-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "nav" }
+nav-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "nav" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -41,3 +45,4 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 
 [bundles]
 ktor = ["ktor-core", "ktor-negotiation", "ktor-cio", "ktor-json"]
+nav-component = ["nav-fragment", "nav-ui"]

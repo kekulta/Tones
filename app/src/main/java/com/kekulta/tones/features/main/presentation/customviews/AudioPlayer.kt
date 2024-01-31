@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.kekulta.tones.R
 import com.kekulta.tones.databinding.AudioPlayerLayoutBinding
-import com.kekulta.tones.features.shared.getDrawable
-import com.kekulta.tones.features.shared.getMaterialColorStateList
+import com.kekulta.tones.features.shared.utils.getDrawable
+import com.kekulta.tones.features.shared.utils.getMaterialColorStateList
 import com.google.android.material.R as Rm
 
 
@@ -25,7 +25,7 @@ class AudioPlayer @JvmOverloads constructor(
     private val binding: AudioPlayerLayoutBinding =
         AudioPlayerLayoutBinding.inflate(LayoutInflater.from(context), this)
     private var player: MediaPlayer? = null
-
+    private var currUri: Uri? = null
 
     init {
         layoutParams = LayoutParams(
@@ -45,9 +45,14 @@ class AudioPlayer @JvmOverloads constructor(
         }
     }
 
-    fun bind(uri: Uri) {
+    fun bind(uri: Uri?) {
+        if (uri == currUri) return
+
         player?.release()
         binding.playButton.isEnabled = false
+        binding.playButton.icon = getDrawable(R.drawable.baseline_play_circle_24)
+        currUri = uri
+        uri ?: return
 
         player = MediaPlayer().apply {
             setDataSource(context, uri)
